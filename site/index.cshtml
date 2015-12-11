@@ -1,8 +1,8 @@
 @{
-	var amplitudeRequest = Request.Params["amplitude"];
-	var amplitudeValue = 1;
-	var clear = int.TryParse(amplitudeRequest, out amplitudeValue);
-	var errorMssage = "no amplitude provided, please input http://apmath4oj.azurewebsites.net/mem.cshtml?amplitude=5";
+	var widthRequest = Request.Params["width"];
+	var widthValue = 1;
+	var clear = int.TryParse(widthRequest, out widthValue);
+	var errorMssage = "no width provided, please input http://webappmath.azurewebsites.net/?width=25";
 }
 <meta charset="utf-8">
 <body>
@@ -32,7 +32,7 @@ g.append("rect")
     .attr("ry", 6)
     .attr("x", -12.5)
     .attr("y", -12.5)
-    .attr("width", 100)
+    .attr("width", @widthValue)
     .attr("height", 25)
     .attr("transform", function(d, i) { return "scale(" + (1 - d / 25) * 20 + ")"; })
     .style("fill", d3.scale.category20c());
