@@ -1,8 +1,16 @@
-<!DOCTYPE html>
+@{
+	var amplitudeRequest = Request.Params["amplitude"];
+	var amplitudeValue = 1;
+	var clear = int.TryParse(amplitudeRequest, out amplitudeValue);
+	var errorMssage = "no amplitude provided, please input http://apmath4oj.azurewebsites.net/mem.cshtml?amplitude=5";
+}
 <meta charset="utf-8">
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
+@if(!clear){
+	Response.Write(String.Format("alert({0});", errorMssage));
+}
 
 var mouse = [480, 250],
     count = 0;
