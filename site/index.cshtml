@@ -1,77 +1,47 @@
-@{
-	var amplitudeRequest = Request.Params["amplitude"];
-	var amplitudeValue = 1;
-	var clear = int.TryParse(amplitudeRequest, out amplitudeValue);
-	var errorMssage = "no amplitude provided, please input http://apmath4oj.azurewebsites.net/mem.cshtml?amplitude=5";
-}
-<html>
-<head>
-  <meta charset="utf-8">
-  <script src="./mathbox-bundle.min.js"></script>
-  <title>MathBox Test</title>
-</head>
+<!DOCTYPE html>
+<meta charset="utf-8">
 <body>
-<script type="text/javascript">
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
 
-@if(!clear){
-	Response.Write(String.Format("alert({0});", errorMssage));
-}
+var mouse = [480, 250],
+    count = 0;
 
- mathbox = mathBox({
-      plugins: ['core', 'controls', 'cursor'],
-      controls: {
-        klass: THREE.OrbitControls
-      },
-    });
-    three = mathbox.three;
+var svg = d3.select("body").append("svg")
+    .attr("width", 960)
+    .attr("height", 500);
 
-    three.camera.position.set(3.5, 1.4, -2.3);
-    three.renderer.setClearColor(new THREE.Color(0x204060), 1.0);
+var g = svg.selectAll("g")
+    .data(d3.range(25))
+  .enter().append("g")
+    .attr("transform", "translate(" + mouse + ")");
 
-    time = 0
-    three.on('update', function () {
-      clock = three.Time.clock
-      time = clock / 4
-    });
+g.append("rect")
+    .attr("rx", 6)
+    .attr("ry", 6)
+    .attr("x", -12.5)
+    .attr("y", -12.5)
+    .attr("width", 25)
+    .attr("height", 25)
+    .attr("transform", function(d, i) { return "scale(" + (1 - d / 25) * 20 + ")"; })
+    .style("fill", d3.scale.category20c());
 
-    view = mathbox
-      .unit({
-        scale: 720,
-      })
-      .cartesian({
-        range: [[-3, 3], [0, 6], [-3, 3]],
-        scale: [2, 2, 2],
-      });
-    view.axis({ axis: 1, width: 15 });
-    view.axis({ axis: 2, width: 15 });
-      view.axis({ axis: 3, width: 15 });
+g.datum(function(d) {
+  return {center: mouse.slice(), angle: 0};
+});
 
-    view.grid({
-      width: 5,
-      opacity: 0.5,
-      axes: [1, 3],
-    });
+svg.on("mousemove", function() {
+  mouse = d3.mouse(this);
+});
 
-    view.area({
-      id: 'sampler',
-      width: 83,
-      height: 83,
-      axes: [1, 3],
-      expr: function (emit, x, y, i, j) {
-        emit(x, 3 * (.5 + .5 * (Math.sin(x*@amplitudeValue + time) * Math.sin(y/@amplitudeValue + time))), y);
-      },
-      channels: 3,
-    });
-    view.surface({
-      lineX: true,
-      lineY: true,
-      shaded: true,
-      color: 0x5090FF,
-      width: 5,
-    });
-
-    surface = mathbox.select('surface')
+d3.timer(function() {
+  count++;
+  g.attr("transform", function(d, i) {
+    d.center[0] += (mouse[0] - d.center[0]) / (i + 5);
+    d.center[1] += (mouse[1] - d.center[1]) / (i + 5);
+    d.angle += Math.sin((count + i) / 10) * 7;
+    return "translate(" + d.center + ")rotate(" + d.angle + ")";
+  });
+});
 
 </script>
-</body>
-</html>
